@@ -278,7 +278,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               exit={{ x: -288 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="md:hidden fixed left-0 top-0 bottom-0 z-50 w-72 bg-card border-r border-border/50 flex flex-col shadow-2xl"
-              style={{ paddingBottom: 'calc(80px + var(--safe-area-bottom))' }}
+              style={{ 
+                paddingBottom: 'calc(80px + var(--safe-area-bottom))',
+                paddingTop: 'calc(16px + var(--safe-area-top))'
+              }}
             >
               <div className="h-16 flex items-center justify-between px-6 border-b border-border/50">
                 <Link href="/" className="flex items-center gap-2">
