@@ -124,11 +124,11 @@ export default function HistoryPage() {
             className="flex flex-col items-center justify-center py-24 text-center px-4"
           >
             <div className="relative mb-6">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-muted/50 to-muted/20 flex items-center justify-center shadow-inner">
-                <Inbox className="w-9 h-9 text-muted-foreground/50" />
+              <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center shadow-inner">
+                <Inbox className="w-9 h-9 text-primary/40" />
               </div>
             </div>
-            <h3 className="font-semibold text-lg mb-2">No history yet</h3>
+            <h3 className="font-bold text-xl mb-2 text-foreground">No history yet</h3>
             <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
               Your received emails will be saved here automatically for easy reference.
             </p>
@@ -156,63 +156,66 @@ export default function HistoryPage() {
           </motion.div>
         ) : (
           <motion.div
-            className="divide-y divide-border/30"
+            className="divide-y divide-border/20"
             variants={listContainer}
             initial="initial"
             animate="animate"
           >
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               {filtered.map((item) => (
                 <motion.div
                   key={item.id}
                   variants={listItem}
                   exit={{ opacity: 0, x: -60, transition: { duration: 0.2 } }}
                   layout
-                  className="group relative hover:bg-muted/30 transition-colors duration-200 px-4 py-4 cursor-default"
+                  className="group relative hover:bg-primary/[0.03] transition-colors duration-200 px-5 py-5 cursor-default"
                 >
-                  <div className="flex items-start gap-3 sm:gap-4 relative z-10">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0 mt-0.5 border border-primary/20 shadow-sm">
+                  <div className="flex items-start gap-4 sm:gap-5 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0 mt-0.5 border border-primary/20 shadow-sm transition-transform group-hover:scale-105">
                       {(item.fromName || item.from || "A").charAt(0).toUpperCase()}
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <h3 className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <h3 className="text-[15px] font-bold text-foreground truncate group-hover:text-primary transition-colors flex-1">
                           {item.subject || "(No Subject)"}
                         </h3>
-                        <span className="text-[11px] font-medium text-muted-foreground whitespace-nowrap bg-muted/50 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-bold text-primary/70 uppercase tracking-wider whitespace-nowrap bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
                           {formatDate(item.receivedAt)}
                         </span>
                       </div>
                       
-                      <p className="text-xs text-foreground/70 font-medium truncate mb-2">
-                        {item.fromName ? `${item.fromName} <${item.from}>` : item.from}
-                      </p>
+                      <div className="flex items-center gap-1.5 mb-2.5">
+                        <Mail className="w-3 h-3 text-muted-foreground" />
+                        <p className="text-xs text-foreground/90 font-semibold truncate">
+                          {item.fromName ? `${item.fromName} <${item.from}>` : item.from}
+                        </p>
+                      </div>
                       
                       {item.intro && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+                        <p className="text-sm text-foreground/70 line-clamp-2 leading-relaxed mb-3 pr-8">
                           {item.intro}
                         </p>
                       )}
                       
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] font-mono h-5 px-1.5 bg-background/50 border-border/50 text-muted-foreground">
+                        <Badge variant="outline" className="text-[10px] font-mono h-5 px-2 bg-muted/30 border-border/50 text-muted-foreground font-medium">
                           {item.address}
                         </Badge>
                       </div>
                     </div>
-
+ 
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="flex-shrink-0 -mr-2 opacity-0 group-hover:opacity-100 transition-all text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-8 h-8 rounded-lg"
+                      className="flex-shrink-0 -mr-2 opacity-0 group-hover:opacity-100 transition-all text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-9 h-9 rounded-xl shadow-sm bg-background/50 border border-border/50"
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteFromHistory(item.id);
                       }}
                       aria-label="Delete from history"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </motion.div>
