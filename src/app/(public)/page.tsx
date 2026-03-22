@@ -8,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   Zap, Shield, Mail, Clock, Copy, Trash2, RefreshCw,
-  ArrowRight, Check, Star, ChevronRight, Eye, Lock,
-  Globe, Sparkles, Users, MousePointerClick
+  ArrowRight, Star, Eye, Lock,
+  Globe, Sparkles, MousePointerClick
 } from "lucide-react"
+import { staggerContainer, staggerItem } from "@/animations"
 
 // ─── HERO SECTION ───────────────────────────────────────────────
 function HeroSection() {
@@ -18,14 +19,15 @@ function HeroSection() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
   const y = useTransform(scrollYProgress, [0, 1], [0, 150])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.97])
 
   return (
-    <section ref={ref} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section ref={ref} className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 grid-bg" />
       <div className="absolute inset-0 radial-glow" />
 
-      {/* Floating orbs */}
+      {/* Animated orbs */}
       <motion.div
         style={{ y }}
         className="absolute top-20 left-[15%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] animate-float"
@@ -33,17 +35,24 @@ function HeroSection() {
       <motion.div
         style={{ y: useTransform(scrollYProgress, [0, 1], [0, -100]) }}
         className="absolute bottom-20 right-[10%] w-96 h-96 rounded-full bg-accent/10 blur-[120px] animate-float"
-        initial={{ animationDelay: "2s" }}
+      />
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-30"
+        style={{
+          background: "radial-gradient(circle, rgba(79, 70, 229, 0.08) 0%, transparent 70%)",
+        }}
+        animate={{ scale: [1, 1.1, 1], rotate: [0, 180, 360] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       />
 
-      <motion.div style={{ opacity }} className="relative z-10 max-w-5xl mx-auto px-4 text-center">
+      <motion.div style={{ opacity, scale }} className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+          <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium gap-1.5">
+            <Sparkles className="w-3.5 h-3.5" />
             Free & Secure — No Signup Required
           </Badge>
         </motion.div>
@@ -62,7 +71,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+          className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Protect your privacy with secure disposable emails. Generate, receive, and delete — all in seconds.
         </motion.p>
@@ -74,11 +83,13 @@ function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Link href="/dashboard">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white text-base px-8 h-12 border-0 gap-2 shadow-lg shadow-primary/25">
-              <Zap className="w-4 h-4" />
-              Get Temporary Email
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white text-base px-8 h-13 border-0 gap-2 shadow-lg shadow-primary/25">
+                <Zap className="w-4.5 h-4.5" />
+                Get Temporary Email
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </motion.div>
           </Link>
         </motion.div>
 
@@ -100,6 +111,17 @@ function HeroSection() {
             </div>
           ))}
         </motion.div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2">
+          <div className="w-1 h-2.5 rounded-full bg-muted-foreground/40" />
+        </div>
       </motion.div>
     </section>
   )
@@ -135,10 +157,10 @@ const features = [
 
 function FeaturesSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section className="py-24 sm:py-32 relative">
+    <section id="features" className="py-24 sm:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -164,9 +186,10 @@ function FeaturesSection() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <Card className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 h-full">
-                <CardContent className="p-6">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <Card className="group relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300 hover-lift h-full">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardContent className="p-6 relative">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                     <feature.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
@@ -202,10 +225,10 @@ const steps = [
 
 function HowItWorksSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section className="py-24 sm:py-32 bg-muted/30 relative">
+    <section id="how-it-works" className="py-24 sm:py-32 bg-muted/30 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -222,7 +245,14 @@ function HowItWorksSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
           {/* Connector line */}
-          <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-primary/20 via-primary to-primary/20" />
+          <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-[2px]">
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={isInView ? { scaleX: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="h-full bg-gradient-to-r from-primary/20 via-primary to-primary/20 origin-left"
+            />
+          </div>
 
           {steps.map((step, i) => (
             <motion.div
@@ -233,10 +263,13 @@ function HowItWorksSection() {
               className="relative text-center"
             >
               <div className="relative inline-flex mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25">
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: 3 }}
+                  className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25"
+                >
                   <step.icon className="w-7 h-7 text-white" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center text-xs font-bold text-primary">
+                </motion.div>
+                <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center text-xs font-bold text-primary shadow-sm">
                   {i + 1}
                 </div>
               </div>
@@ -253,7 +286,7 @@ function HowItWorksSection() {
 // ─── LIVE DEMO SECTION ────────────────────────────────────────
 function LiveDemoSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-80px" })
   const [typedEmail, setTypedEmail] = useState("")
   const fullEmail = "user7x9k2m@swiftmail.dev"
 
@@ -267,7 +300,7 @@ function LiveDemoSection() {
       } else {
         clearInterval(interval)
       }
-    }, 60)
+    }, 55)
     return () => clearInterval(interval)
   }, [isInView])
 
@@ -278,7 +311,7 @@ function LiveDemoSection() {
   ]
 
   return (
-    <section className="py-24 sm:py-32 relative">
+    <section id="demo" className="py-24 sm:py-32 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -298,9 +331,9 @@ function LiveDemoSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <Card className="overflow-hidden border-border/50 shadow-2xl shadow-primary/10">
+          <Card className="overflow-hidden border-border/50 shadow-2xl shadow-primary/5 hover-glow transition-all duration-500">
             {/* Toolbar */}
-            <div className="bg-muted/50 border-b border-border/50 px-6 py-4 flex items-center justify-between">
+            <div className="bg-muted/50 border-b border-border/50 px-4 sm:px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-500/80" />
@@ -311,15 +344,15 @@ function LiveDemoSection() {
                   <Mail className="w-3.5 h-3.5 text-primary" />
                   <span className="font-mono text-xs">
                     {typedEmail}
-                    <span className="animate-pulse">|</span>
+                    <span className="animate-pulse text-primary">|</span>
                   </span>
                 </div>
               </div>
               <div className="flex gap-2">
-                <div className="h-8 px-3 bg-primary/10 rounded-lg flex items-center gap-1.5 text-xs font-medium text-primary">
+                <div className="h-8 px-3 bg-primary/10 rounded-lg flex items-center gap-1.5 text-xs font-medium text-primary cursor-pointer hover:bg-primary/15 transition-colors">
                   <Copy className="w-3 h-3" /> Copy
                 </div>
-                <div className="h-8 px-3 bg-muted rounded-lg flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <div className="hidden sm:flex h-8 px-3 bg-muted rounded-lg items-center gap-1.5 text-xs font-medium text-muted-foreground cursor-pointer hover:bg-muted/80 transition-colors">
                   <RefreshCw className="w-3 h-3" /> Refresh
                 </div>
               </div>
@@ -333,9 +366,9 @@ function LiveDemoSection() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.5 + i * 0.2 }}
-                  className={`flex items-center gap-4 px-6 py-4 border-b border-border/30 hover:bg-muted/50 transition-colors cursor-pointer ${msg.unread ? "bg-primary/[0.02]" : ""}`}
+                  className={`flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 border-b border-border/30 hover:bg-muted/50 transition-colors cursor-pointer ${msg.unread ? "bg-primary/[0.02]" : ""}`}
                 >
-                  <div className={`w-2 h-2 rounded-full ${msg.unread ? "bg-primary" : "bg-transparent"}`} />
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${msg.unread ? "bg-primary shadow-sm shadow-primary/50" : "bg-transparent"}`} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className={`text-sm truncate ${msg.unread ? "font-semibold" : "font-medium text-muted-foreground"}`}>{msg.from}</p>
@@ -343,7 +376,7 @@ function LiveDemoSection() {
                     </div>
                     <p className="text-sm text-muted-foreground truncate">{msg.subject}</p>
                   </div>
-                  <div className="flex gap-1.5 opacity-0 group-hover:opacity-100">
+                  <div className="opacity-0 group-hover:opacity-100 flex-shrink-0">
                     <Trash2 className="w-4 h-4 text-muted-foreground" />
                   </div>
                 </motion.div>
@@ -365,7 +398,7 @@ const testimonials = [
 
 function TestimonialsSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
     <section className="py-24 sm:py-32 bg-muted/30 relative">
@@ -390,7 +423,7 @@ function TestimonialsSection() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <Card className="border-border/50 hover:border-primary/20 transition-all duration-300 h-full">
+              <Card className="border-border/50 hover:border-primary/20 transition-all duration-300 hover-lift h-full">
                 <CardContent className="p-6">
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: t.rating }).map((_, j) => (
@@ -421,7 +454,7 @@ function TestimonialsSection() {
 // ─── CTA SECTION ───────────────────────────────────────────────
 function CTASection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
     <section className="py-24 sm:py-32 relative">
@@ -431,28 +464,31 @@ function CTASection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <Card className="overflow-hidden border-0 bg-gradient-to-br from-primary via-accent to-purple-600 text-white shadow-2xl shadow-primary/30">
-            <CardContent className="p-12 sm:p-16 text-center relative">
-              {/* Background pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }} />
-              </div>
+          <Card className="overflow-hidden border-0 bg-gradient-to-br from-primary via-accent to-purple-600 text-white shadow-2xl shadow-primary/20 relative">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }} />
+            </div>
+            {/* Glow orbs */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
 
-              <div className="relative z-10">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                  Start Using Temporary Email Now
-                </h2>
-                <p className="text-white/80 max-w-xl mx-auto mb-8">
-                  Join thousands of users protecting their privacy. It takes less than a second.
-                </p>
-                <Link href="/dashboard">
-                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base px-8 h-12 gap-2 shadow-xl border-0">
-                    <Zap className="w-4 h-4" />
+            <CardContent className="p-10 sm:p-16 text-center relative z-10">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                Start Using Temporary Email Now
+              </h2>
+              <p className="text-white/80 max-w-xl mx-auto mb-8 leading-relaxed">
+                Join thousands of users protecting their privacy. It takes less than a second.
+              </p>
+              <Link href="/dashboard">
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block">
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base px-8 h-13 gap-2 shadow-xl border-0 font-semibold">
+                    <Zap className="w-4.5 h-4.5" />
                     Generate Email
                     <ArrowRight className="w-4 h-4" />
                   </Button>
-                </Link>
-              </div>
+                </motion.div>
+              </Link>
             </CardContent>
           </Card>
         </motion.div>
