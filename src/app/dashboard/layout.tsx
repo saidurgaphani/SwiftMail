@@ -86,13 +86,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      <div 
-        className="flex-1 flex flex-col h-screen overflow-hidden"
-        style={{ paddingTop: 'var(--safe-area-top)' }}
-      >
+    <div className="flex h-screen bg-background overflow-hidden relative">
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
         <OfflineBanner />
-        <main className="flex-1 overflow-auto pb-48 md:pb-0">
+        <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
           <motion.div
             key={pathname}
             initial={{ opacity: 0, y: 8 }}
@@ -106,10 +103,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* ─── MOBILE BOTTOM NAV ────────────────────────────── */}
         <nav
-          className="md:hidden fixed left-0 right-0 z-40 glass-elevated border-t border-border/50"
-          style={{ 
-            bottom: 'calc(var(--ad-height, 0px) + var(--safe-area-bottom))'
-          }}
+          className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-elevated border-t border-border/50 pb-[env(safe-area-inset-bottom)]"
           role="navigation"
           aria-label="Mobile navigation"
         >
