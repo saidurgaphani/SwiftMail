@@ -81,6 +81,38 @@ export function useTempMail(): UseTempMailReturn {
     try {
       const msgs = await mailTmService.getMessages(account.token)
       setMessages(msgs)
+      
+      // Save to local history
+      if (typeof window !== "undefined" && msgs.length > 0) {
+        try {
+          const stored = localStorage.getItem("swiftmail_history")
+          const existingHistory = stored ? JSON.parse(stored) : []
+          
+          let updated = false
+          const newHistory = [...existingHistory]
+          
+          msgs.forEach((msg) => {
+            if (!existingHistory.some((h: any) => h.id === msg.id)) {
+              newHistory.unshift({
+                id: msg.id,
+                address: account.address,
+                subject: msg.subject || "(No Subject)",
+                from: msg.from.address,
+                fromName: msg.from.name || "",
+                intro: msg.intro || "",
+                receivedAt: msg.createdAt,
+              })
+              updated = true
+            }
+          })
+          
+          if (updated) {
+            localStorage.setItem("swiftmail_history", JSON.stringify(newHistory))
+          }
+        } catch (e) {
+          console.error("Failed to append to history", e)
+        }
+      }
     } catch (err) {
       console.error("Failed to refresh:", err)
       if (err instanceof Error && err.message.includes("401")) {

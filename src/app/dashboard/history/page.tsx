@@ -2,25 +2,18 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Clock, Search, Trash2, Mail, InboxIcon } from "lucide-react"
+import { Clock, Search, Trash2, Mail } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 
-// Demo history data (in prod, this would come from Firestore)
-const demoHistory = [
-  { id: "1", address: "abc123@tmpmail.org", subject: "Verify your GitHub account", from: "noreply@github.com", receivedAt: "2026-03-21T10:30:00Z" },
-  { id: "2", address: "xyz789@tmpmail.org", subject: "Welcome to Notion", from: "team@notion.so", receivedAt: "2026-03-20T14:22:00Z" },
-  { id: "3", address: "test456@tmpmail.org", subject: "Your verification code: 482910", from: "no-reply@stripe.com", receivedAt: "2026-03-19T08:15:00Z" },
-  { id: "4", address: "user111@tmpmail.org", subject: "Confirm your email address", from: "accounts@google.com", receivedAt: "2026-03-18T19:45:00Z" },
-]
+import { useHistory } from "@/hooks/use-history"
 
 export default function HistoryPage() {
   const [search, setSearch] = useState("")
-  const [history, setHistory] = useState(demoHistory)
+  const { history, deleteFromHistory, clearHistory } = useHistory()
 
   const filtered = history.filter(
     (h) =>
@@ -30,7 +23,7 @@ export default function HistoryPage() {
   )
 
   const handleDelete = (id: string) => {
-    setHistory((prev) => prev.filter((h) => h.id !== id))
+    deleteFromHistory(id)
   }
 
   return (
@@ -40,7 +33,14 @@ export default function HistoryPage() {
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Clock className="w-5 h-5 text-primary" /> Email History
           </h1>
-          <Badge variant="secondary">{history.length} emails</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">{history.length} emails</Badge>
+            {history.length > 0 && (
+              <Button variant="outline" size="sm" onClick={clearHistory} className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive">
+                Clear All
+              </Button>
+            )}
+          </div>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -64,14 +64,19 @@ export default function HistoryPage() {
               transition={{ delay: i * 0.05 }}
               className="border-b border-border/30 hover:bg-muted/50 transition-colors px-4 py-4"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
-                  {item.from[0].toUpperCase()}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0 mt-1">
+                  {item.from[0]?.toUpperCase() || "M"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{item.subject}</p>
                   <p className="text-xs text-muted-foreground truncate">From: {item.from}</p>
-                  <div className="flex items-center gap-2 mt-1">
+                  {item.intro && (
+                    <p className="text-xs text-foreground/80 mt-2 line-clamp-3 leading-relaxed border-l-2 border-primary/20 pl-2">
+                      {item.intro}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 mt-3">
                     <Badge variant="outline" className="text-xs font-mono">{item.address}</Badge>
                     <span className="text-xs text-muted-foreground">{formatDate(item.receivedAt)}</span>
                   </div>
