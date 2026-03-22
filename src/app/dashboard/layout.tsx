@@ -126,7 +126,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {sidebarOpen && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-            <motion.aside initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ type: "spring", damping: 25 }} className="md:hidden fixed left-0 top-0 bottom-0 z-50 w-72 bg-card border-r border-border/50 flex flex-col">
+            <motion.aside initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ type: "spring", damping: 25 }} className="md:hidden fixed left-0 top-0 bottom-[80px] z-50 w-72 bg-card border-r border-border/50 flex flex-col shadow-2xl">
               <div className="p-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
@@ -150,8 +150,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   )
                 })}
               </nav>
-              <div className="p-4 pb-20 border-t border-border/50">
-                <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={handleLogout}>
+              <div className="p-4 border-t border-border/50">
+                <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground hover:text-destructive" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" /> Logout
                 </Button>
               </div>
