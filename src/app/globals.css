@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -81,6 +80,8 @@
   --sidebar-accent-foreground: #3730a3;
   --sidebar-border: #e5e5f0;
   --sidebar-ring: #6366f1;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .dark {

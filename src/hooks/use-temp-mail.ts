@@ -11,6 +11,8 @@ interface UseTempMailReturn {
   selectedMessage: MailTmMessageFull | null
   isLoading: boolean
   isRefreshing: boolean
+  isInitialized: boolean
+  innerLoading: boolean
   error: string | null
   generateEmail: () => Promise<void>
   refreshInbox: () => Promise<void>
@@ -26,8 +28,25 @@ export function useTempMail(): UseTempMailReturn {
   const [selectedMessage, setSelectedMessage] = useState<MailTmMessageFull | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Restore session
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("swiftmail_account")
+      if (stored) {
+        try {
+          const acc = JSON.parse(stored) as MailTmAccount
+          mailTmService.setToken(acc.token)
+          setAccount(acc)
+        } catch {
+          localStorage.removeItem("swiftmail_account")
+        }
+      }
+      setIsInitialized(true)
+    }
+  }, [])
 
   const generateEmail = useCallback(async () => {
     setIsLoading(true)
@@ -37,7 +56,7 @@ export function useTempMail(): UseTempMailReturn {
       if (!domains.length) throw new Error("No domains available")
 
       const domain = domains[0].domain
-      const username = generateRandomString(10)
+      const username = generateRandomString(10).toLowerCase()
       const address = `${username}@${domain}`
       const password = generateRandomString(16)
 
@@ -46,9 +65,8 @@ export function useTempMail(): UseTempMailReturn {
       setMessages([])
       setSelectedMessage(null)
 
-      // Store in session for persistence
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("swiftmail_account", JSON.stringify(acc))
+        localStorage.setItem("swiftmail_account", JSON.stringify(acc))
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate email")
@@ -65,6 +83,10 @@ export function useTempMail(): UseTempMailReturn {
       setMessages(msgs)
     } catch (err) {
       console.error("Failed to refresh:", err)
+      if (err instanceof Error && err.message.includes("401")) {
+        setAccount(null)
+        localStorage.removeItem("swiftmail_account")
+      }
     } finally {
       setIsRefreshing(false)
     }
@@ -104,11 +126,11 @@ export function useTempMail(): UseTempMailReturn {
       setAccount(null)
       setMessages([])
       setSelectedMessage(null)
-      if (typeof window !== "undefined") {
-        sessionStorage.removeItem("swiftmail_account")
-      }
+      localStorage.removeItem("swiftmail_account")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete account")
+      console.error("Failed to delete account:", err)
+      setAccount(null)
+      localStorage.removeItem("swiftmail_account")
     }
   }, [account])
 
@@ -116,39 +138,23 @@ export function useTempMail(): UseTempMailReturn {
     setSelectedMessage(null)
   }, [])
 
-  // Auto-refresh every 5 seconds
+  // Auto-refresh every 10 seconds (less aggressive)
   useEffect(() => {
-    if (account) {
+    if (account && isInitialized) {
       refreshInbox()
-      intervalRef.current = setInterval(refreshInbox, 5000)
+      const interval = setInterval(refreshInbox, 10000)
+      return () => clearInterval(interval)
     }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [account, refreshInbox])
-
-  // Restore session
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("swiftmail_account")
-      if (stored) {
-        try {
-          const acc = JSON.parse(stored) as MailTmAccount
-          mailTmService.setToken(acc.token)
-          setAccount(acc)
-        } catch {
-          sessionStorage.removeItem("swiftmail_account")
-        }
-      }
-    }
-  }, [])
+  }, [account, refreshInbox, isInitialized])
 
   return {
     account,
     messages,
     selectedMessage,
-    isLoading,
+    isLoading: !isInitialized,
+    innerLoading: isLoading,
     isRefreshing,
+    isInitialized,
     error,
     generateEmail,
     refreshInbox,

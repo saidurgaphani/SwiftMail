@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     url: 'https://swiftmail-sm.vercel.app',
-    cleartext: true
+    cleartext: true,
+    errorPath: 'offline.html'
   }
 };
 

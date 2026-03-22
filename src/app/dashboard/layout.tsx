@@ -93,18 +93,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card/80 backdrop-blur-lg border-b border-border/50 flex items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Zap className="w-4 h-4 text-white" />
+      <div 
+        className="md:hidden fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border/50"
+        style={{ paddingTop: 'var(--safe-area-top)' }}
+      >
+        <div className="flex items-center justify-between h-14 px-4">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold gradient-text">SwiftMail</span>
+          </Link>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2">
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
-          <span className="text-lg font-bold gradient-text">SwiftMail</span>
-        </Link>
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2">
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
 
@@ -148,7 +153,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto md:pt-0 pt-14">
+      <main 
+        className="flex-1 overflow-auto md:pt-0"
+        style={{ paddingTop: 'calc(3.5rem + var(--safe-area-top))' }}
+      >
         <motion.div
           key={pathname}
           initial={{ opacity: 0, y: 10 }}

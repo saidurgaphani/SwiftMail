@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SwiftMail - Offline</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --accent: #9333ea;
+            --background: #09090b;
+            --foreground: #fafafa;
+            --muted: #27272a;
+            --muted-foreground: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 24px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: var(--muted-foreground);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 280px;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        .cloud-decoration {
+            position: absolute;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.15;
+            background: var(--primary);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .cloud-decoration-2 {
+            position: absolute;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.1;
+            background: var(--accent);
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud-decoration"></div>
+    <div class="cloud-decoration-2"></div>
+
+    <div class="icon-container">
+        <!-- Lucide Zap Icon SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+            <path d="M13 22v-4h3l-4-5v4H9l4 5z"></path>
+        </svg>
+    </div>
+
+    <h1>No Connection</h1>
+    <p>Please check your internet connection and try again to access your mail.</p>
+
+    <button class="btn" onclick="window.location.reload()">Try Again</button>
+
+    <script>
+        // Check connectivity periodically and reload if online
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        // Optional: Manual check
+        document.querySelector('.btn').addEventListener('click', () => {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

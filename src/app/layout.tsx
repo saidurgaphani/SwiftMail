@@ -16,6 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
+import { type Viewport } from "next"
+
 export const metadata: Metadata = {
   title: "SwiftMail — Instant Temporary Email",
   description: "Protect your privacy with secure disposable emails. No signup required. Generate temporary email addresses instantly and receive messages in real-time.",
@@ -26,6 +28,15 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "SwiftMail",
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
