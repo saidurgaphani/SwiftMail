@@ -4,8 +4,8 @@ import { Capacitor } from '@capacitor/core';
 
 // Standard Google Test IDs (Replace with your own when going to production)
 // Note: Interstitial test ID
-const INTERSTITIAL_TEST_ID = 'ca-app-pub-3940256099942544/1033173712';
-const BANNER_TEST_ID = 'ca-app-pub-3940256099942544/6300978111';
+const INTERSTITIAL_ID = 'ca-app-pub-5014086119578114/5010047114';
+const BANNER_ID = 'ca-app-pub-5014086119578114/4720737659';
 
 export function useAdMob() {
   const isInitialized = useRef(false);
@@ -15,22 +15,22 @@ export function useAdMob() {
     if (Capacitor.isNativePlatform() && !isInitialized.current) {
       AdMob.initialize({
         testingDevices: ['2077ef9a63d2b398840261c8221a0c9b'], // Example device ID
-        initializeForTesting: true,
+        initializeForTesting: false,
       }).then(() => {
         isInitialized.current = true;
         console.log('AdMob Initialized');
 
         // Pre-load the first Interstitial Ad so it's ready instantly
         AdMob.prepareInterstitial({
-          adId: INTERSTITIAL_TEST_ID,
-          isTesting: true,
+          adId: INTERSTITIAL_ID,
+          isTesting: false,
         }).catch(err => console.error('Failed to prepare initial Interstitial', err));
 
         // When the user closes an Interstitial, automatically load the next one
         AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
           AdMob.prepareInterstitial({
-            adId: INTERSTITIAL_TEST_ID,
-            isTesting: true,
+            adId: INTERSTITIAL_ID,
+            isTesting: false,
           }).catch(err => console.error('Failed to prepare next Interstitial', err));
         });
 
@@ -63,11 +63,11 @@ export function useAdMob() {
     if (!Capacitor.isNativePlatform()) return;
 
     const options: BannerAdOptions = {
-      adId: BANNER_TEST_ID,
+      adId: BANNER_ID,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: true,
+      isTesting: false,
       // npa: true
     };
     
@@ -98,8 +98,8 @@ export function useAdMob() {
       console.error('Failed to show Interstitial ad', err);
       // Fallback: If it failed, try to prepare it again for next time
       AdMob.prepareInterstitial({
-        adId: INTERSTITIAL_TEST_ID,
-        isTesting: true,
+        adId: INTERSTITIAL_ID,
+        isTesting: false,
       }).catch(e => console.error(e));
     }
   };

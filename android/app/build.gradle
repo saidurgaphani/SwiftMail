@@ -52,6 +52,9 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    
+    // Meta (Facebook) Audience Network Adapter for AdMob mediation
+    implementation 'com.google.ads.mediation:facebook:6.19.0.0'
 }
 
 apply from: 'capacitor.build.gradle'
