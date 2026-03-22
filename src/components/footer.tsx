@@ -4,7 +4,6 @@ import { Zap, Github, Twitter } from "lucide-react"
 const footerLinks = {
   Product: [
     { href: "/features", label: "Features" },
-    { href: "/pricing", label: "Pricing" },
     { href: "/how-it-works", label: "How It Works" },
   ],
   Company: [
@@ -14,8 +13,6 @@ const footerLinks = {
   ],
   Resources: [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/signin", label: "Sign In" },
-    { href: "/signup", label: "Sign Up" },
   ],
 }
 

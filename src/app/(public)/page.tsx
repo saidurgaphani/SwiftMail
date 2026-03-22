@@ -80,12 +80,6 @@ function HeroSection() {
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
-          <Link href="/signin">
-            <Button size="lg" variant="outline" className="text-base px-8 h-12 gap-2">
-              Sign In
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </Link>
         </motion.div>
 
         {/* Stats */}
@@ -423,93 +417,6 @@ function TestimonialsSection() {
   )
 }
 
-// ─── PRICING SECTION ───────────────────────────────────────────
-function PricingSection() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
-
-  const plans = [
-    {
-      name: "Free",
-      price: "$0",
-      description: "Perfect for basic usage",
-      features: ["Temporary email generation", "Real-time inbox", "5 email history", "Auto-delete after 1 hour"],
-      cta: "Get Started Free",
-      popular: false,
-    },
-    {
-      name: "Pro",
-      price: "$4.99",
-      period: "/mo",
-      description: "For power users",
-      features: ["Unlimited email history", "Custom email aliases", "Priority delivery", "No auto-delete", "API access", "Priority support"],
-      cta: "Upgrade to Pro",
-      popular: true,
-    },
-  ]
-
-  return (
-    <section className="py-24 sm:py-32 relative">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <Badge variant="secondary" className="mb-4">Pricing</Badge>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Simple, <span className="gradient-text">transparent</span> pricing
-          </h2>
-          <p className="text-muted-foreground">Start free. Upgrade when you need more.</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {plans.map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-            >
-              <Card className={`relative overflow-hidden h-full ${plan.popular ? "border-primary shadow-xl shadow-primary/10" : "border-border/50"}`}>
-                {plan.popular && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-l from-primary to-accent text-white text-xs font-bold px-4 py-1 rounded-bl-lg">
-                    Popular
-                  </div>
-                )}
-                <CardContent className="p-8">
-                  <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    {plan.period && <span className="text-muted-foreground">{plan.period}</span>}
-                  </div>
-                  <ul className="space-y-3 mb-8">
-                    {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-3 text-sm">
-                        <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/dashboard">
-                    <Button
-                      className={`w-full ${plan.popular ? "bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0" : ""}`}
-                      variant={plan.popular ? "default" : "outline"}
-                    >
-                      {plan.cta}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 // ─── CTA SECTION ───────────────────────────────────────────────
 function CTASection() {
@@ -563,7 +470,6 @@ export default function HomePage() {
       <HowItWorksSection />
       <LiveDemoSection />
       <TestimonialsSection />
-      <PricingSection />
       <CTASection />
     </>
   )

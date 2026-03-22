@@ -10,7 +10,6 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 const navItems = [
   { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/contact", label: "Contact" },
 ]
@@ -67,9 +66,6 @@ export function Navbar() {
           {/* Actions */}
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/signin">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
             <Link href="/dashboard">
               <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0">
                 Get Started
@@ -112,9 +108,6 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-2 flex flex-col gap-2">
-                <Link href="/signin" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full">Sign In</Button>
-                </Link>
                 <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full bg-gradient-to-r from-primary to-accent text-white border-0">
                     Get Started
