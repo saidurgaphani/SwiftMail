@@ -97,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Logo */}
-        <div className={`p-4 ${sidebarCollapsed ? "px-3" : "px-6"} flex items-center justify-between`}>
+        <div className={`h-16 flex items-center border-b border-border/50 ${sidebarCollapsed ? "justify-center" : "justify-between px-6"}`}>
           <Link href="/" className="flex items-center gap-2 group" aria-label="SwiftMail Home">
             <motion.div
               whileHover={{ rotate: 180 }}
@@ -131,14 +131,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Nav */}
-        <ScrollArea className="flex-1 px-3">
-          <nav className="space-y-1" role="navigation" aria-label="Dashboard navigation">
+        <ScrollArea className="flex-1">
+          <nav className="space-y-1.5 px-3 py-6" role="navigation" aria-label="Dashboard navigation">
             {sidebarItems.map((item) => {
               const active = isActive(item.href)
               const linkContent = (
                 <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}>
                   <motion.div
-                    className={`relative flex items-center gap-3 ${sidebarCollapsed ? "justify-center px-2" : "px-3"} py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`relative flex items-center gap-3 ${sidebarCollapsed ? "justify-center px-2" : "px-3"} py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                       active
                         ? "text-primary bg-primary/10 shadow-sm"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
@@ -198,7 +198,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </ScrollArea>
 
         {/* User Section */}
-        <div className="p-3 border-t border-border/50">
+        <div className="p-4 border-t border-border/50 bg-muted/10">
           {!sidebarCollapsed ? (
             <div className="space-y-2">
               <div className="flex items-center gap-2 px-2">
@@ -280,7 +280,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="md:hidden fixed left-0 top-0 bottom-0 z-50 w-72 bg-card border-r border-border/50 flex flex-col shadow-2xl"
               style={{ paddingBottom: 'calc(80px + var(--safe-area-bottom))' }}
             >
-              <div className="p-6 flex items-center justify-between">
+              <div className="h-16 flex items-center justify-between px-6 border-b border-border/50">
                 <Link href="/" className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                     <Zap className="w-5 h-5 text-white" />
@@ -292,13 +292,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
               </div>
 
-              <nav className="flex-1 px-3 space-y-1">
+              <nav className="flex-1 px-4 py-6 space-y-1.5">
                 {sidebarItems.map((item) => {
                   const active = isActive(item.href)
                   return (
                     <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}>
                       <motion.div
-                        className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all ${
+                        className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all ${
                           active
                             ? "text-primary bg-primary/10"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted"
