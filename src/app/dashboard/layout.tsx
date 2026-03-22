@@ -106,8 +106,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* ─── MOBILE BOTTOM NAV ────────────────────────────── */}
         <nav
-          className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-elevated border-t border-border/50"
-          style={{ paddingBottom: 'var(--safe-area-bottom)' }}
+          className="md:hidden fixed left-0 right-0 z-40 glass-elevated border-t border-border/50"
+          style={{ 
+            bottom: 'calc(50px + var(--safe-area-bottom))'
+          }}
           role="navigation"
           aria-label="Mobile navigation"
         >

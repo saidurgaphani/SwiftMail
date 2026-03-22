@@ -45,9 +45,9 @@ export function useAdMob() {
 
     const options: BannerAdOptions = {
       adId: BANNER_TEST_ID,
-      adSize: BannerAdSize.BANNER,
+      adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 220, // Extreme margin to force the ad above the navbar
+      margin: 0,
       isTesting: true,
       // npa: true
     };
