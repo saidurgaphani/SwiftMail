@@ -22,33 +22,66 @@ export function Navbar() {
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener("scroll", handleScroll, { passive: true })
+    
+    // Handle initial hash on load or navigation
+    if (window.location.hash && pathname === "/") {
+      const id = window.location.hash.replace("#", "")
+      const element = document.getElementById(id)
+      if (element) {
+        setTimeout(() => {
+          const offset = 100
+          const bodyRect = document.body.getBoundingClientRect().top
+          const elementRect = element.getBoundingClientRect().top
+          const elementPosition = elementRect - bodyRect
+          const offsetPosition = elementPosition - offset
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          })
+        }, 100) // Small delay to ensure layout is ready
+      }
+    }
+
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [pathname])
 
   const handleSmoothScroll = (e: React.MouseEvent, href: string) => {
     if (href.startsWith("#")) {
-      e.preventDefault()
       const id = href.replace("#", "")
       
       if (pathname !== "/") {
-        window.location.href = `/${href}`
+        // Just let the link handle cross-page navigation
+        setMobileOpen(false)
         return
       }
 
-      const element = document.getElementById(id)
-      if (element) {
-        const offset = 80 // Navbar height offset
-        const bodyRect = document.body.getBoundingClientRect().top
-        const elementRect = element.getBoundingClientRect().top
-        const elementPosition = elementRect - bodyRect
-        const offsetPosition = elementPosition - offset
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        })
-      }
+      // On landing page, prevent default and handle manually
+      e.preventDefault()
+      
+      // Close menu first if it's open
+      const wasOpen = mobileOpen
       setMobileOpen(false)
+
+      // Wait for menu to start closing before scrolling
+      // This helps avoid layout shifts or scroll-locking issues on mobile
+      const delay = wasOpen ? 300 : 0
+      
+      setTimeout(() => {
+        const element = document.getElementById(id)
+        if (element) {
+          const offset = 100
+          const bodyRect = document.body.getBoundingClientRect().top
+          const elementRect = element.getBoundingClientRect().top
+          const elementPosition = elementRect - bodyRect
+          const offsetPosition = elementPosition - offset
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          })
+        }
+      }, delay)
     }
   }
 
