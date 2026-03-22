@@ -47,7 +47,7 @@ export function useAdMob() {
       adId: BANNER_TEST_ID,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 0,
+      margin: 130, // Offset for the bottom navbar + safe area (increased to avoid overlap)
       isTesting: true,
       // npa: true
     };

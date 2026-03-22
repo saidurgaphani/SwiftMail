@@ -92,7 +92,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         style={{ paddingTop: 'var(--safe-area-top)' }}
       >
         <OfflineBanner />
-        <main className="flex-1 overflow-auto pb-24 md:pb-0">
+        <main className="flex-1 overflow-auto pb-48 md:pb-0">
           <motion.div
             key={pathname}
             initial={{ opacity: 0, y: 8 }}
