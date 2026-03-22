@@ -150,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   )
                 })}
               </nav>
-              <div className="p-4 border-t border-border/50">
+              <div className="p-4 pb-20 border-t border-border/50">
                 <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" /> Logout
                 </Button>
