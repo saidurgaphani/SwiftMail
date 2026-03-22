@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useTempMail } from "@/hooks/use-temp-mail"
+import { useAdMob } from "@/hooks/use-admob"
 import { formatDate, copyToClipboard, truncateText } from "@/lib/utils"
 import { toast } from "sonner"
 import {
@@ -22,6 +23,7 @@ export default function DashboardPage() {
     error, generateEmail, refreshInbox, openMessage, deleteMessage,
     deleteAccount, clearSelectedMessage, innerLoading
   } = useTempMail()
+  const { showInterstitial } = useAdMob()
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -72,7 +74,10 @@ export default function DashboardPage() {
           <Button
             size="lg"
             className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0 gap-2 px-8 h-12 shadow-lg shadow-primary/25"
-            onClick={generateEmail}
+            onClick={() => {
+              showInterstitial()
+              generateEmail()
+            }}
           >
             <Zap className="w-4 h-4" /> Generate Email
           </Button>
@@ -145,7 +150,10 @@ export default function DashboardPage() {
               <Trash2 className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Delete</span>
             </Button>
-            <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0 gap-1.5" onClick={generateEmail}>
+            <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0 gap-1.5" onClick={() => {
+              showInterstitial()
+              generateEmail()
+            }}>
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">New Email</span>
             </Button>

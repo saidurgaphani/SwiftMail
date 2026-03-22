@@ -19,6 +19,21 @@ export function useAdMob() {
       }).then(() => {
         isInitialized.current = true;
         console.log('AdMob Initialized');
+
+        // Pre-load the first Interstitial Ad so it's ready instantly
+        AdMob.prepareInterstitial({
+          adId: INTERSTITIAL_TEST_ID,
+          isTesting: true,
+        }).catch(err => console.error('Failed to prepare initial Interstitial', err));
+
+        // When the user closes an Interstitial, automatically load the next one
+        AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
+          AdMob.prepareInterstitial({
+            adId: INTERSTITIAL_TEST_ID,
+            isTesting: true,
+          }).catch(err => console.error('Failed to prepare next Interstitial', err));
+        });
+
       }).catch(err => {
         console.error('Failed to initialize AdMob', err);
       });
@@ -58,13 +73,14 @@ export function useAdMob() {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
-      await AdMob.prepareInterstitial({
-        adId: INTERSTITIAL_TEST_ID,
-        isTesting: true,
-      });
       await AdMob.showInterstitial();
     } catch (err) {
       console.error('Failed to show Interstitial ad', err);
+      // Fallback: If it failed, try to prepare it again for next time
+      AdMob.prepareInterstitial({
+        adId: INTERSTITIAL_TEST_ID,
+        isTesting: true,
+      }).catch(e => console.error(e));
     }
   };
 
