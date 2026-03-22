@@ -59,23 +59,30 @@ export default function HistoryPage() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="border-b border-border/50 p-4 space-y-3 bg-card/20">
+      <div className="border-b border-zinc-800/80 p-6 space-y-4 bg-zinc-950/20 backdrop-blur-md">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" /> History
-            </h1>
-            <Badge variant="secondary" className="text-xs">{history.length}</Badge>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <Clock className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                History
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/20">
+                  {history.length}
+                </span>
+              </h1>
+              <p className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">Your email archive</p>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1.5 h-8 text-xs"
+              className="gap-2 h-9 text-xs font-bold border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-800 hover:text-white"
               onClick={cycleSortOption}
-              aria-label={`Sort: ${sortLabels[sortBy]}`}
             >
-              <ArrowUpDown className="w-3.5 h-3.5" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-primary" />
               <span className="hidden sm:inline">{sortLabels[sortBy]}</span>
             </Button>
             {history.length > 0 && (
@@ -83,7 +90,7 @@ export default function HistoryPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearHistory}
-                className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                className="h-9 text-xs font-bold gap-2 text-zinc-400 hover:text-red-400 hover:bg-red-400/10 border border-transparent hover:border-red-400/20"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Clear All</span>
@@ -93,20 +100,18 @@ export default function HistoryPage() {
         </div>
 
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <div className="relative group/search">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within/search:text-primary transition-colors" />
           <Input
             placeholder="Search by subject, sender, or address..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 h-10 bg-muted/40 border-border/50 focus:border-primary/30"
-            aria-label="Search email history"
+            className="pl-11 h-12 bg-zinc-900/60 border-zinc-800 focus:border-primary/50 focus:ring-primary/20 text-white placeholder:text-zinc-600 rounded-xl transition-all"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              aria-label="Clear search"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -163,7 +168,7 @@ export default function HistoryPage() {
             initial="initial"
             animate="animate"
           >
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               {filtered.map((item) => {
                 // ROBUST DATE HANDLING
                 let formattedDate = "Recently"
@@ -174,42 +179,42 @@ export default function HistoryPage() {
                 } catch (e) {
                   console.error("Date formatting failed", e)
                 }
- 
+
                 return (
                   <motion.div
                     key={item.id}
                     variants={listItem}
                     exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                     layout
-                    className="group glass-card border border-border/40 hover:border-primary/30 transition-all duration-300 rounded-2xl p-5 relative overflow-hidden flex flex-col gap-4 shadow-sm hover:shadow-md"
+                    className="group bg-zinc-900/40 border border-zinc-800/60 hover:border-primary/50 transition-all duration-300 rounded-2xl p-5 relative overflow-hidden flex flex-col gap-4 shadow-sm hover:shadow-lg backdrop-blur-sm"
                   >
                     {/* Background Glow */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] rounded-full -translate-y-12 translate-x-12 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
- 
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] rounded-full -translate-y-12 translate-x-12 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
                     <div className="flex items-start justify-between gap-4 relative z-10">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-lg font-bold flex-shrink-0 shadow-lg shadow-primary/20">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center text-white text-lg font-bold flex-shrink-0 shadow-lg shadow-primary/30 ring-1 ring-white/10">
                           {(item.fromName || item.from || "A").charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <h3 className="font-bold text-[16px] text-foreground truncate max-w-[70%]">
+                            <h3 className="font-bold text-lg text-zinc-100 truncate max-w-[70%]">
                               {item.fromName || "Unknown Sender"}
                             </h3>
-                            <Badge variant="secondary" className="text-[10px] font-mono font-medium px-2 py-0 h-4 bg-muted/60 text-muted-foreground tracking-tighter truncate">
+                            <div className="px-2 py-0.5 rounded-full bg-zinc-800/80 border border-zinc-700/50 text-[10px] font-bold text-zinc-400 font-mono truncate">
                               {item.from}
-                            </Badge>
+                            </div>
                           </div>
-                          <p className="text-xs font-bold text-primary tracking-wide uppercase">
+                          <p className="text-xs font-black text-primary tracking-wider uppercase">
                             {formattedDate}
                           </p>
                         </div>
                       </div>
- 
+
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="opacity-0 group-hover:opacity-100 transition-all text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-9 h-9 rounded-xl flex-shrink-0 bg-background/50 border border-border/40"
+                        className="opacity-0 group-hover:opacity-100 transition-all text-zinc-400 hover:text-red-400 hover:bg-red-400/10 w-9 h-9 rounded-xl flex-shrink-0 bg-zinc-900/50 border border-zinc-800/50"
                         onClick={(e) => {
                           e.stopPropagation();
                           deleteFromHistory(item.id);
@@ -218,25 +223,25 @@ export default function HistoryPage() {
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
- 
+
                     <div className="space-y-2 relative z-10">
-                      <h4 className="text-[15px] font-bold text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                      <h4 className="text-[17px] font-bold text-white leading-tight group-hover:text-primary transition-colors line-clamp-2">
                         {item.subject || "(No Subject)"}
                       </h4>
                       {item.intro && (
-                        <p className="text-sm text-foreground/70 line-clamp-2 leading-relaxed font-medium">
+                        <p className="text-sm text-zinc-300 leading-relaxed font-medium line-clamp-2">
                           {item.intro}
                         </p>
                       )}
                     </div>
- 
+
                     <div className="pt-2 flex items-center justify-between gap-3 relative z-10">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50 flex-1 min-w-0">
-                        <Mail className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-[11px] font-medium text-muted-foreground truncate">{item.address}</span>
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-950/50 border border-zinc-800/80 flex-1 min-w-0">
+                        <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span className="text-xs font-bold text-zinc-200 truncate">{item.address}</span>
                       </div>
-                      <Badge className="bg-success/10 text-success border-success/20 hover:bg-success/10 text-[10px] font-bold uppercase tracking-widest px-2 pr-2.5 h-6">
-                        Saved
+                      <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 text-[10px] font-black uppercase tracking-widest px-2.5 h-6 shrink-0">
+                        SAVED
                       </Badge>
                     </div>
                   </motion.div>
