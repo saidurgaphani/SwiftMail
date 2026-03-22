@@ -84,8 +84,10 @@ function HeroSection() {
         >
           <Link href="/dashboard">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white text-base px-8 h-13 border-0 gap-2 shadow-lg shadow-primary/25">
-                <Zap className="w-4.5 h-4.5" />
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white text-base px-8 h-13 border-0 gap-2 shadow-lg shadow-primary/25 group">
+                <div className="w-5 h-5 overflow-hidden rounded-sm transition-transform group-hover:scale-110">
+                  <img src="/logo.png" alt="" className="w-full h-full object-contain brightness-0 invert" />
+                </div>
                 Get Temporary Email
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -130,7 +132,7 @@ function HeroSection() {
 // ─── FEATURES SECTION ───────────────────────────────────────────
 const features = [
   {
-    icon: Zap,
+    icon: () => <img src="/logo.png" alt="" className="w-6 h-6 object-contain brightness-0 invert" />,
     title: "Lightning Fast",
     description: "Generate and receive emails in under 1 second. No delays, no waiting.",
     gradient: "from-yellow-500 to-orange-500",
@@ -189,8 +191,8 @@ function FeaturesSection() {
               <Card className="group relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300 hover-lift h-full">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardContent className="p-6 relative">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
-                    <feature.icon className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm p-2.5`}>
+                    <feature.icon />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
@@ -265,9 +267,9 @@ function HowItWorksSection() {
               <div className="relative inline-flex mb-6">
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 3 }}
-                  className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25"
+                  className="w-16 h-16 rounded-22xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25 p-3.5"
                 >
-                  <step.icon className="w-7 h-7 text-white" />
+                  <img src="/logo.png" alt="" className="w-full h-full object-contain brightness-0 invert" />
                 </motion.div>
                 <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center text-xs font-bold text-primary shadow-sm">
                   {i + 1}
@@ -482,8 +484,10 @@ function CTASection() {
               </p>
               <Link href="/dashboard">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block">
-                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base px-8 h-13 gap-2 shadow-xl border-0 font-semibold">
-                    <Zap className="w-4.5 h-4.5" />
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base px-8 h-13 gap-2 shadow-xl border-0 font-semibold group">
+                    <div className="w-5 h-5 overflow-hidden rounded-sm transition-transform group-hover:scale-110">
+                      <img src="/logo.png" alt="" className="w-full h-full object-contain" />
+                    </div>
                     Generate Email
                     <ArrowRight className="w-4 h-4" />
                   </Button>

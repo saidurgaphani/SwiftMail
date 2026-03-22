@@ -123,8 +123,8 @@ export default function DashboardPage() {
           className="flex flex-col items-center gap-4"
         >
           <div className="relative">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-xl overflow-hidden glass-elevated border border-border/50 p-1.5 shadow-lg shadow-primary/20 flex items-center justify-center">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="absolute inset-0 rounded-xl bg-primary/20 animate-pulse-ring" />
           </div>
@@ -186,13 +186,16 @@ export default function DashboardPage() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               size="lg"
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0 gap-2 px-10 h-13 shadow-lg shadow-primary/25 text-base"
+              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0 gap-2 px-10 h-13 shadow-lg shadow-primary/25 text-base group"
               onClick={() => {
                 showInterstitial()
                 generateEmail()
               }}
             >
-              <Zap className="w-5 h-5" /> Generate Email
+              <div className="w-5 h-5 overflow-hidden rounded-sm transition-transform group-hover:scale-110">
+                <img src="/logo.png" alt="" className="w-full h-full object-contain brightness-0 invert" />
+              </div> 
+              Generate Email
             </Button>
           </motion.div>
           {error && (

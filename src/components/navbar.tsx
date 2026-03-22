@@ -107,11 +107,15 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group" aria-label="SwiftMail Home">
             <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.4 }}
-              className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative w-10 h-10 rounded-xl overflow-hidden glass-elevated border border-border/50 p-1"
             >
-              <Zap className="w-5 h-5 text-white" />
+              <img 
+                src="/logo.png" 
+                alt="SwiftMail Logo" 
+                className="w-full h-full object-contain"
+              />
             </motion.div>
             <span className="text-xl font-bold gradient-text">SwiftMail</span>
           </Link>
