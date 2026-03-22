@@ -23,7 +23,13 @@ export function useHistory() {
       const stored = localStorage.getItem("swiftmail_history")
       if (stored) {
         try {
-          setHistory(JSON.parse(stored))
+          const parsed = JSON.parse(stored)
+          if (Array.isArray(parsed)) {
+            setHistory(parsed)
+          } else {
+            console.warn("Invalid history format, ignoring.")
+            localStorage.removeItem("swiftmail_history")
+          }
         } catch (e) {
           console.error("Failed to parse history", e)
         }

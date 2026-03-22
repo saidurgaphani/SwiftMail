@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
+
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Clock, Search, Trash2, Mail, ArrowUpDown, X, Inbox
@@ -24,20 +24,20 @@ export default function HistoryPage() {
   const filtered = useMemo(() => {
     let items = history.filter(
       (h) =>
-        h.subject.toLowerCase().includes(search.toLowerCase()) ||
-        h.from.toLowerCase().includes(search.toLowerCase()) ||
-        h.address.toLowerCase().includes(search.toLowerCase())
+        (h?.subject || "").toLowerCase().includes(search.toLowerCase()) ||
+        (h?.from || "").toLowerCase().includes(search.toLowerCase()) ||
+        (h?.address || "").toLowerCase().includes(search.toLowerCase())
     )
 
     switch (sortBy) {
       case "newest":
-        items = [...items].sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime())
+        items = [...items].sort((a, b) => new Date(b?.receivedAt || 0).getTime() - new Date(a?.receivedAt || 0).getTime())
         break
       case "oldest":
-        items = [...items].sort((a, b) => new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime())
+        items = [...items].sort((a, b) => new Date(a?.receivedAt || 0).getTime() - new Date(b?.receivedAt || 0).getTime())
         break
       case "subject":
-        items = [...items].sort((a, b) => a.subject.localeCompare(b.subject))
+        items = [...items].sort((a, b) => (a?.subject || "").localeCompare(b?.subject || ""))
         break
     }
 
@@ -115,7 +115,7 @@ export default function HistoryPage() {
       </div>
 
       {/* List */}
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto min-h-0 w-full relative">
         {filtered.length === 0 ? (
           <motion.div
             variants={fadeInUp}
@@ -169,14 +169,14 @@ export default function HistoryPage() {
                 >
                   <div className="flex items-start gap-3 sm:gap-4">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/15 to-accent/15 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0 mt-0.5 border border-primary/10">
-                      {item.from[0]?.toUpperCase() || "M"}
+                      {item.from?.charAt(0)?.toUpperCase() || "M"}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
                         <p className="text-sm font-medium truncate">{item.subject || "(No Subject)"}</p>
                         <span className="text-[11px] text-muted-foreground ml-3 flex-shrink-0">{formatDate(item.receivedAt)}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">From: {item.from}</p>
+                      <p className="text-xs text-muted-foreground truncate">From: {item.from || "Unknown"}</p>
                       {item.intro && (
                         <p className="text-xs text-foreground/60 mt-1.5 line-clamp-2 leading-relaxed">
                           {item.intro}
@@ -201,7 +201,7 @@ export default function HistoryPage() {
             </AnimatePresence>
           </motion.div>
         )}
-      </ScrollArea>
+      </div>
     </div>
   )
 }
