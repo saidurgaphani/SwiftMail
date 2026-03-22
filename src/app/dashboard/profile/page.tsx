@@ -8,10 +8,12 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import {
   User, Mail, Shield, Trash2, Clock, AlertTriangle,
-  CheckCircle2, Copy, HardDrive, ShieldCheck
+  CheckCircle2, Copy, HardDrive, ShieldCheck, LogOut
 } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
 import { useTempMail } from "@/hooks/use-temp-mail"
 import { useHistory } from "@/hooks/use-history"
+import { useRouter } from "next/navigation"
 import { copyToClipboard } from "@/lib/utils"
 import { toast } from "sonner"
 import { staggerContainer, staggerItem } from "@/animations"
@@ -19,8 +21,20 @@ import { staggerContainer, staggerItem } from "@/animations"
 export default function ProfilePage() {
   const { account, deleteAccount } = useTempMail()
   const { history, clearHistory } = useHistory()
+  const { logout } = useAuth()
+  const router = useRouter()
   const [copied, setCopied] = useState(false)
   const [showDangerConfirm, setShowDangerConfirm] = useState(false)
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      toast.success("Logged out successfully")
+      router.push("/")
+    } catch {
+      toast.error("Failed to logout")
+    }
+  }
 
   const handleCopy = async () => {
     if (!account) return
@@ -157,6 +171,19 @@ export default function ProfilePage() {
                   </div>
                   <Badge className="bg-success/10 text-success border-success/20 text-xs">Protected</Badge>
                 </div>
+
+                <Separator className="my-2 opacity-50" />
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-12 text-muted-foreground hover:text-destructive hover:bg-destructive/5 px-3"
+                  onClick={handleLogout}
+                >
+                  <div className="p-2 rounded-lg bg-muted/50 group-hover:bg-destructive/10">
+                    <LogOut className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">Logout of SwiftMail</span>
+                </Button>
               </div>
             </CardContent>
           </Card>
