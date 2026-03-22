@@ -162,7 +162,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main 
-        className="flex-1 overflow-auto md:pt-0"
+        className="flex-1 overflow-auto pb-20 md:pb-0 md:pt-0"
         style={{ paddingTop: 'calc(3.5rem + var(--safe-area-top))' }}
       >
         <motion.div
