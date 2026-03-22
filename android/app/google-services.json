@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "707871429358",
+    "project_id": "swiftmail-d2583",
+    "storage_bucket": "swiftmail-d2583.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707871429358:android:6e6c555c0b4028b43ed9ff",
+        "android_client_info": {
+          "package_name": "com.swiftmail.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707871429358-paqf20ogqi1pr98e95i9dj72501moka0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCZIesPKtuIFpBmmK4hPtbrWvDxQy_0js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707871429358-paqf20ogqi1pr98e95i9dj72501moka0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,171 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: Firebase Auth UID
+    // Fields:
+    //   - id: string (required, immutable) - Firebase Auth UID
+    //   - email: string (required) - User's email
+    //   - name: string (required) - Display name
+    //   - photoURL: string (optional) - Profile photo URL
+    //   - createdAt: timestamp (required, immutable) - Account creation
+    //   - plan: string (required) - "free" or "pro"
+    //
+    // Collection: savedEmails
+    // Document ID: auto-generated
+    // Fields:
+    //   - userId: string (required, immutable) - Owner UID
+    //   - emailAddress: string (required) - Temp email address
+    //   - subject: string (required) - Email subject
+    //   - from: string (required) - Sender email
+    //   - body: string (required) - Email body content
+    //   - receivedAt: timestamp (required) - When received
+    //
+    // Collection: userSettings
+    // Document ID: Firebase Auth UID
+    // Fields:
+    //   - userId: string (required, immutable) - Owner UID
+    //   - theme: string (required) - "light" | "dark" | "system"
+    //   - notifications: bool (required) - Enable notifications
+    //   - autoRefresh: bool (required) - Enable auto-refresh
+    //   - refreshInterval: number (required) - Refresh interval in ms
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource by matching UID
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Verify UID matches auth on create
+    function uidMatchesAuth(field) {
+      return request.resource.data[field] == request.auth.uid;
+    }
+
+    // Ensure a field is not modified on update
+    function fieldUnchanged(field) {
+      return !(field in request.resource.data) ||
+        request.resource.data[field] == resource.data[field];
+    }
+
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate string field
+    function isValidString(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate plan value
+    function isValidPlan() {
+      return request.resource.data.plan in ['free', 'pro'];
+    }
+
+    // Validate theme value
+    function isValidTheme() {
+      return request.resource.data.theme in ['light', 'dark', 'system'];
+    }
+
+    // ===============================================================
+    // users collection
+    // ===============================================================
+    match /users/{userId} {
+      // Any authenticated user can read their own profile
+      allow read: if isOwner(userId);
+
+      // User can create their own profile
+      allow create: if isOwner(userId)
+        && hasRequiredFields(['id', 'email', 'name', 'createdAt', 'plan'])
+        && uidMatchesAuth('id')
+        && isValidString('email', 3, 320)
+        && isValidString('name', 1, 100)
+        && isValidPlan()
+        && request.resource.data.createdAt is timestamp;
+
+      // User can update only their own profile (id and createdAt immutable)
+      allow update: if isOwner(userId)
+        && fieldUnchanged('id')
+        && fieldUnchanged('createdAt')
+        && isValidString('name', 1, 100)
+        && isValidPlan();
+
+      // User can delete their own profile
+      allow delete: if isOwner(userId);
+    }
+
+    // ===============================================================
+    // savedEmails collection
+    // ===============================================================
+    match /savedEmails/{emailId} {
+      // Users can only read their own saved emails
+      allow read: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+
+      // Users can save emails (only to their own account)
+      allow create: if isAuthenticated()
+        && hasRequiredFields(['userId', 'emailAddress', 'subject', 'from', 'body', 'receivedAt'])
+        && uidMatchesAuth('userId')
+        && isValidString('emailAddress', 3, 320)
+        && isValidString('subject', 0, 1000)
+        && isValidString('from', 3, 320)
+        && request.resource.data.body is string
+        && request.resource.data.receivedAt is timestamp;
+
+      // Users can update their own saved emails (userId immutable)
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid
+        && fieldUnchanged('userId');
+
+      // Users can delete only their own saved emails
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ===============================================================
+    // userSettings collection
+    // ===============================================================
+    match /userSettings/{userId} {
+      // Users can only read their own settings
+      allow read: if isOwner(userId);
+
+      // Users can create their own settings
+      allow create: if isOwner(userId)
+        && hasRequiredFields(['userId', 'theme', 'notifications', 'autoRefresh', 'refreshInterval'])
+        && uidMatchesAuth('userId')
+        && isValidTheme()
+        && request.resource.data.notifications is bool
+        && request.resource.data.autoRefresh is bool
+        && request.resource.data.refreshInterval is number;
+
+      // Users can update their own settings (userId immutable)
+      allow update: if isOwner(userId)
+        && fieldUnchanged('userId')
+        && isValidTheme()
+        && request.resource.data.notifications is bool
+        && request.resource.data.autoRefresh is bool
+        && request.resource.data.refreshInterval is number;
+
+      // Users can delete their own settings
+      allow delete: if isOwner(userId);
+    }
+  }
+}
