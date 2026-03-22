@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize, InterstitialAdPluginEvents } from '@capacitor-community/admob';
+import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize, InterstitialAdPluginEvents, BannerAdPluginEvents } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 
 // Standard Google Test IDs (Replace with your own when going to production)
@@ -34,6 +34,25 @@ export function useAdMob() {
           }).catch(err => console.error('Failed to prepare next Interstitial', err));
         });
 
+        // Dynamic Ad Height Calculation
+        AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
+          console.log('Banner Loaded');
+          // Update CSS variable so the layout can shift
+          // Adaptive banners are typically ~50-90px. Let's start with a safe default 
+          // or try to get actual height if the plugin supports it in the event object.
+          document.documentElement.style.setProperty('--ad-height', '60px');
+        });
+
+        AdMob.addListener(BannerAdPluginEvents.FailedToLoad, () => {
+          document.documentElement.style.setProperty('--ad-height', '0px');
+        });
+
+        AdMob.addListener(BannerAdPluginEvents.SizeChanged, (size) => {
+          if (size.height) {
+            document.documentElement.style.setProperty('--ad-height', `${size.height}px`);
+          }
+        });
+
       }).catch(err => {
         console.error('Failed to initialize AdMob', err);
       });
@@ -64,6 +83,7 @@ export function useAdMob() {
     try {
       await AdMob.hideBanner();
       await AdMob.removeBanner();
+      document.documentElement.style.setProperty('--ad-height', '0px');
     } catch (err) {
       console.error('Failed to hide banner', err);
     }
