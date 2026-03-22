@@ -115,22 +115,25 @@ export default function HistoryPage() {
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto min-h-0 w-full relative">
+      <div className="flex-1 overflow-y-auto min-h-0 w-full relative px-4 pb-12">
         {history.length === 0 ? (
           <motion.div
             variants={fadeInUp}
             initial="initial"
             animate="animate"
-            className="flex flex-col items-center justify-center py-24 text-center px-4"
+            className="flex flex-col items-center justify-center py-32 text-center"
           >
-            <div className="relative mb-6">
-              <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center shadow-inner">
-                <Inbox className="w-9 h-9 text-primary/40" />
+            <div className="relative mb-8">
+              <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shadow-lg border border-primary/10">
+                <Clock className="w-10 h-10 text-primary animate-pulse" />
+              </div>
+              <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-card border border-border shadow-sm flex items-center justify-center">
+                <Mail className="w-5 h-5 text-muted-foreground/60" />
               </div>
             </div>
-            <h3 className="font-bold text-xl mb-2 text-foreground">No history yet</h3>
-            <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
-              Your received emails will be saved here automatically for easy reference.
+            <h3 className="font-bold text-2xl mb-3 tracking-tight">No history yet</h3>
+            <p className="text-muted-foreground max-w-[280px] leading-relaxed mx-auto">
+              Emails received during your sessions are saved here automatically.
             </p>
           </motion.div>
         ) : filtered.length === 0 ? (
@@ -138,88 +141,107 @@ export default function HistoryPage() {
             variants={fadeInUp}
             initial="initial"
             animate="animate"
-            className="flex flex-col items-center justify-center py-24 text-center px-4"
+            className="flex flex-col items-center justify-center py-32 text-center"
           >
             <div className="w-20 h-20 rounded-3xl bg-muted/30 flex items-center justify-center mb-6">
-              <Search className="w-9 h-9 text-muted-foreground/50" />
+              <Search className="w-9 h-9 text-muted-foreground/40" />
             </div>
-            <h3 className="font-semibold text-lg mb-2">No results found</h3>
-            <p className="text-sm text-muted-foreground">No emails match &quot;{search}&quot;</p>
+            <h3 className="font-semibold text-xl mb-2">No matches found</h3>
+            <p className="text-muted-foreground">Try adjusting your search terms</p>
             <Button
-              variant="outline"
-              size="sm"
-              className="mt-6 h-9 gap-2 rounded-xl"
+              variant="link"
               onClick={() => setSearch("")}
+              className="mt-4 text-primary font-bold"
             >
-              <X className="w-3.5 h-3.5" /> Clear search
+              Clear filters
             </Button>
           </motion.div>
         ) : (
           <motion.div
-            className="divide-y divide-border/20"
+            className="grid grid-cols-1 gap-4 py-4"
             variants={listContainer}
             initial="initial"
             animate="animate"
           >
-            <AnimatePresence>
-              {filtered.map((item) => (
-                <motion.div
-                  key={item.id}
-                  variants={listItem}
-                  exit={{ opacity: 0, x: -60, transition: { duration: 0.2 } }}
-                  layout
-                  className="group relative hover:bg-primary/[0.03] transition-colors duration-200 px-5 py-5 cursor-default"
-                >
-                  <div className="flex items-start gap-4 sm:gap-5 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0 mt-0.5 border border-primary/20 shadow-sm transition-transform group-hover:scale-105">
-                      {(item.fromName || item.from || "A").charAt(0).toUpperCase()}
+            <AnimatePresence mode="popLayout">
+              {filtered.map((item) => {
+                // ROBUST DATE HANDLING
+                let formattedDate = "Recently"
+                try {
+                  if (item.receivedAt) {
+                    formattedDate = formatDate(item.receivedAt)
+                  }
+                } catch (e) {
+                  console.error("Date formatting failed", e)
+                }
+ 
+                return (
+                  <motion.div
+                    key={item.id}
+                    variants={listItem}
+                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                    layout
+                    className="group glass-card border border-border/40 hover:border-primary/30 transition-all duration-300 rounded-2xl p-5 relative overflow-hidden flex flex-col gap-4 shadow-sm hover:shadow-md"
+                  >
+                    {/* Background Glow */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] rounded-full -translate-y-12 translate-x-12 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+ 
+                    <div className="flex items-start justify-between gap-4 relative z-10">
+                      <div className="flex items-start gap-4 flex-1 min-w-0">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-lg font-bold flex-shrink-0 shadow-lg shadow-primary/20">
+                          {(item.fromName || item.from || "A").charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <h3 className="font-bold text-[16px] text-foreground truncate max-w-[70%]">
+                              {item.fromName || "Unknown Sender"}
+                            </h3>
+                            <Badge variant="secondary" className="text-[10px] font-mono font-medium px-2 py-0 h-4 bg-muted/60 text-muted-foreground tracking-tighter truncate">
+                              {item.from}
+                            </Badge>
+                          </div>
+                          <p className="text-xs font-bold text-primary tracking-wide uppercase">
+                            {formattedDate}
+                          </p>
+                        </div>
+                      </div>
+ 
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-all text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-9 h-9 rounded-xl flex-shrink-0 bg-background/50 border border-border/40"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteFromHistory(item.id);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-3 mb-1.5">
-                        <h3 className="text-[15px] font-bold text-foreground truncate group-hover:text-primary transition-colors flex-1">
-                          {item.subject || "(No Subject)"}
-                        </h3>
-                        <span className="text-[10px] font-bold text-primary/70 uppercase tracking-wider whitespace-nowrap bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
-                          {formatDate(item.receivedAt)}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center gap-1.5 mb-2.5">
-                        <Mail className="w-3 h-3 text-muted-foreground" />
-                        <p className="text-xs text-foreground/90 font-semibold truncate">
-                          {item.fromName ? `${item.fromName} <${item.from}>` : item.from}
-                        </p>
-                      </div>
-                      
+ 
+                    <div className="space-y-2 relative z-10">
+                      <h4 className="text-[15px] font-bold text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                        {item.subject || "(No Subject)"}
+                      </h4>
                       {item.intro && (
-                        <p className="text-sm text-foreground/70 line-clamp-2 leading-relaxed mb-3 pr-8">
+                        <p className="text-sm text-foreground/70 line-clamp-2 leading-relaxed font-medium">
                           {item.intro}
                         </p>
                       )}
-                      
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] font-mono h-5 px-2 bg-muted/30 border-border/50 text-muted-foreground font-medium">
-                          {item.address}
-                        </Badge>
-                      </div>
                     </div>
  
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="flex-shrink-0 -mr-2 opacity-0 group-hover:opacity-100 transition-all text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-9 h-9 rounded-xl shadow-sm bg-background/50 border border-border/50"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteFromHistory(item.id);
-                      }}
-                      aria-label="Delete from history"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="pt-2 flex items-center justify-between gap-3 relative z-10">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50 flex-1 min-w-0">
+                        <Mail className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-[11px] font-medium text-muted-foreground truncate">{item.address}</span>
+                      </div>
+                      <Badge className="bg-success/10 text-success border-success/20 hover:bg-success/10 text-[10px] font-bold uppercase tracking-widest px-2 pr-2.5 h-6">
+                        Saved
+                      </Badge>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </AnimatePresence>
           </motion.div>
         )}
