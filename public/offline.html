@@ -150,9 +150,10 @@
 
     <script>
         function retryConnection() {
-            // Using '/' ensures Capacitor handles the routing internally
-            // without popping out to the external browser
-            window.location.href = '/';
+            // Using the precise server.url configured in capacitor.config.ts 
+            // ensures Capacitor securely loads the internal app instead
+            // of escaping to the external browser for localhost.
+            window.location.href = 'https://swiftmail-sm.vercel.app/';
         }
 
         // Check connectivity periodically and reload if online
