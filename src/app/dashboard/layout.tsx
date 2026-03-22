@@ -12,8 +12,10 @@ import {
   Zap, Inbox, Clock, Settings, User, LogOut, Menu, X, ChevronRight
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useAdMob } from "@/hooks/use-admob"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useEffect } from "react"
 
 const sidebarItems = [
   { href: "/dashboard", icon: Inbox, label: "Inbox" },
@@ -26,7 +28,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { showBanner } = useAdMob()
   const router = useRouter()
+
+  useEffect(() => {
+    // Show banner ad when entering dashboard layout
+    showBanner();
+  }, [showBanner]);
 
   const handleLogout = async () => {
     try {
