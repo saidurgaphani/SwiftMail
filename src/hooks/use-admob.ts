@@ -13,44 +13,20 @@ export function useAdMob() {
   useEffect(() => {
     // Only initialize on native platforms to avoid Web errors
     if (Capacitor.isNativePlatform() && !isInitialized.current) {
+      console.log('AdMob: Initializing Production...');
       AdMob.initialize({
-        testingDevices: ['2077ef9a63d2b398840261c8221a0c9b'], // Example device ID
+        testingDevices: [], 
         initializeForTesting: false,
       }).then(() => {
         isInitialized.current = true;
-        console.log('AdMob Initialized');
-
-        // Pre-load the first Interstitial Ad so it's ready instantly
+        console.log('AdMob Initialized ✅');
+        
+        // Pre-load the first Interstitial Ad
         AdMob.prepareInterstitial({
           adId: INTERSTITIAL_ID,
           isTesting: false,
-        }).catch(err => console.error('Failed to prepare initial Interstitial', err));
-
-        // When the user closes an Interstitial, automatically load the next one
-        AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
-          AdMob.prepareInterstitial({
-            adId: INTERSTITIAL_ID,
-            isTesting: false,
-          }).catch(err => console.error('Failed to prepare next Interstitial', err));
-        });
-
-        // Dynamic Ad Height Calculation
-        AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
-          console.log('Banner Loaded');
-          // Update CSS variable so the layout can shift
-          // Adaptive banners are typically ~50-90px. Let's start with a safe default 
-          // or try to get actual height if the plugin supports it in the event object.
-          document.documentElement.style.setProperty('--ad-height', '60px');
-        });
-
-        AdMob.addListener(BannerAdPluginEvents.FailedToLoad, () => {
-          document.documentElement.style.setProperty('--ad-height', '0px');
-        });
-
-        AdMob.addListener(BannerAdPluginEvents.SizeChanged, (size) => {
-          if (size.height) {
-            document.documentElement.style.setProperty('--ad-height', `${size.height}px`);
-          }
+        }).catch(err => {
+          console.error('Failed to prepare initial Interstitial', err);
         });
 
       }).catch(err => {
@@ -62,16 +38,31 @@ export function useAdMob() {
   const showBanner = async () => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const options: BannerAdOptions = {
-      adId: BANNER_ID,
-      adSize: BannerAdSize.ADAPTIVE_BANNER,
-      position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 0,
-      isTesting: false,
-      // npa: true
-    };
-    
     try {
+      const options: BannerAdOptions = {
+        adId: BANNER_ID,
+        adSize: BannerAdSize.ADAPTIVE_BANNER,
+        position: BannerAdPosition.BOTTOM_CENTER,
+        margin: 0,
+        isTesting: false,
+      };
+      
+      console.log('AdMob: Showing Banner...');
+
+      // Update height when ad loads
+      AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
+        // Adaptive Banners are usually ~50-60px on phones
+        // We set 60px as a safe fallback, or use the event data if available
+        document.documentElement.style.setProperty('--ad-height', '60px');
+      });
+
+      // Also listen for size changes
+      AdMob.addListener(BannerAdPluginEvents.SizeChanged, (info) => {
+        if (info.height) {
+          document.documentElement.style.setProperty('--ad-height', `${info.height}px`);
+        }
+      });
+
       await AdMob.showBanner(options);
     } catch (err) {
       console.error('Failed to show banner', err);
@@ -93,10 +84,12 @@ export function useAdMob() {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
+      console.log('AdMob: Requesting Interstitial...');
       await AdMob.showInterstitial();
     } catch (err) {
       console.error('Failed to show Interstitial ad', err);
-      // Fallback: If it failed, try to prepare it again for next time
+      
+      // Fallback
       AdMob.prepareInterstitial({
         adId: INTERSTITIAL_ID,
         isTesting: false,

@@ -4,11 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.swiftmail.app',
   appName: 'SwiftMail',
   webDir: 'out',
-  server: {
-    url: 'https://swiftmail-sm.vercel.app',
-    cleartext: true,
-    errorPath: 'offline.html'
-  },
   plugins: {
     AdMob: {
       // Dummy Android App ID (Testing only). Replace with your actual AdMob App ID.
